@@ -2,8 +2,9 @@ package com.creativitydrive.ae2;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
@@ -17,17 +18,19 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
 
     private final Component description;
-    private final AEFluidKey fluidKey;
+    private final AEKey storedKey;
 
     public MekanismCreativeFluidTankStorageCell(ItemStack stack) {
         this.description = stack.getHoverName();
-        this.fluidKey = getStoredFluidKey(stack);
+        AEFluidKey fluidKey = getStoredFluidKey(stack);
+        // An empty creative tank is itself the infinitely available item.
+        this.storedKey = fluidKey != null ? fluidKey : AEItemKey.of(stack);
     }
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (fluidKey == null || !fluidKey.equals(what)) {
+        if (!storedKey.equals(what)) {
             return 0;
         }
         return amount;
@@ -36,7 +39,7 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (fluidKey == null || !fluidKey.equals(what)) {
+        if (!storedKey.equals(what)) {
             return 0;
         }
         return amount;
@@ -44,19 +47,17 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        if (fluidKey != null) {
-            out.add(fluidKey, DISPLAYED_AMOUNT);
-        }
+        out.add(storedKey, DISPLAYED_AMOUNT);
     }
 
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
-        return fluidKey != null && fluidKey.equals(what);
+        return storedKey.equals(what);
     }
 
     @Override
     public CellState getStatus() {
-        return fluidKey == null ? CellState.EMPTY : CellState.TYPES_FULL;
+        return CellState.TYPES_FULL;
     }
 
     @Override

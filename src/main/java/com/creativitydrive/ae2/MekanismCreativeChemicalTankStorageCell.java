@@ -3,6 +3,7 @@ package com.creativitydrive.ae2;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
@@ -20,17 +21,19 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
 
     private final Component description;
-    private final MekanismKey chemicalKey;
+    private final AEKey storedKey;
 
     public MekanismCreativeChemicalTankStorageCell(ItemStack stack) {
         this.description = stack.getHoverName();
-        this.chemicalKey = getStoredChemicalKey(stack);
+        MekanismKey chemicalKey = getStoredChemicalKey(stack);
+        // An empty creative chemical tank is itself the infinitely available item.
+        this.storedKey = chemicalKey != null ? chemicalKey : AEItemKey.of(stack);
     }
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (chemicalKey == null || !chemicalKey.equals(what)) {
+        if (!storedKey.equals(what)) {
             return 0;
         }
         return amount;
@@ -39,7 +42,7 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (chemicalKey == null || !chemicalKey.equals(what)) {
+        if (!storedKey.equals(what)) {
             return 0;
         }
         return amount;
@@ -47,19 +50,17 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        if (chemicalKey != null) {
-            out.add(chemicalKey, DISPLAYED_AMOUNT);
-        }
+        out.add(storedKey, DISPLAYED_AMOUNT);
     }
 
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
-        return chemicalKey != null && chemicalKey.equals(what);
+        return storedKey.equals(what);
     }
 
     @Override
     public CellState getStatus() {
-        return chemicalKey == null ? CellState.EMPTY : CellState.TYPES_FULL;
+        return CellState.TYPES_FULL;
     }
 
     @Override

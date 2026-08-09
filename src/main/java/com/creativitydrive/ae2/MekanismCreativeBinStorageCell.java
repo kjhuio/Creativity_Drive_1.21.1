@@ -13,8 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import mekanism.common.inventory.BinMekanismInventory;
 
 /**
- * A read-through view of the single item configured in a creative bin.
- * The bin remains authoritative; AE2 never persists or consumes its contents.
+ * A read-through view of the item configured in a creative bin. An empty bin
+ * supplies itself so it can be duplicated through the ME network.
  */
 public final class MekanismCreativeBinStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
@@ -24,7 +24,9 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
 
     public MekanismCreativeBinStorageCell(ItemStack stack) {
         this.description = stack.getHoverName();
-        this.itemKey = getStoredItemKey(stack);
+        AEItemKey storedItemKey = getStoredItemKey(stack);
+        // An empty creative bin is itself the infinitely available item.
+        this.itemKey = storedItemKey != null ? storedItemKey : AEItemKey.of(stack);
     }
 
     @Override
@@ -53,7 +55,7 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
 
     @Override
     public CellState getStatus() {
-        return itemKey == null ? CellState.EMPTY : CellState.TYPES_FULL;
+        return CellState.TYPES_FULL;
     }
 
     @Override
