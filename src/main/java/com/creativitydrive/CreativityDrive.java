@@ -2,6 +2,7 @@ package com.creativitydrive;
 
 import appeng.api.storage.StorageCells;
 import com.creativitydrive.ae2.MekanismCreativeChemicalTankCellHandler;
+import com.creativitydrive.ae2.MekanismCreativeBinCellHandler;
 import com.creativitydrive.ae2.MekanismCreativeFluidTankCellHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.fml.common.Mod;
@@ -23,7 +24,8 @@ public class CreativityDrive {
         event.enqueueWork(() -> {
             StorageCells.addCellHandler(MekanismCreativeFluidTankCellHandler.INSTANCE);
             StorageCells.addCellHandler(MekanismCreativeChemicalTankCellHandler.INSTANCE);
-            LOGGER.info("Registered Mekanism creative tanks as AE2 infinite storage cells");
+            StorageCells.addCellHandler(MekanismCreativeBinCellHandler.INSTANCE);
+            LOGGER.info("Registered Mekanism creative tanks and bins as AE2 infinite storage cells");
         });
     }
 }
