@@ -11,8 +11,8 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
@@ -80,7 +80,7 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     }
 
     private static AEFluidKey getStoredFluidKey(ItemStack stack) {
-        var handler = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+        var handler = stack.getCapability(Capabilities.FluidHandler.ITEM);
         if (handler == null) {
             return null;
         }

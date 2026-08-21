@@ -36,17 +36,18 @@ displayName="${mod_name}" #mandatory
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="examplemod.png" #optional
+logoFile= "creativity_drive_icon.png" #optional
 
 # A text field displayed in the mod UI
-#credits="" #optional
+credits="Original mod by Sponeru (exe-teams)" #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
-#authors=""
+authors="kjhuio (Minecraft : qwe0412_)"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Example mod description.
+Makes Mekanism creative fluid tanks work as infinite AE2 fluid storage cells in ME Drives.
+This mod is a forked from https://github.com/exe-teams/Creativity_Drive
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.

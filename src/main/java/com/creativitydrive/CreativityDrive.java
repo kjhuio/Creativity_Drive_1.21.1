@@ -5,9 +5,12 @@ import com.creativitydrive.ae2.MekanismCreativeChemicalTankCellHandler;
 import com.creativitydrive.ae2.MekanismCreativeBinCellHandler;
 import com.creativitydrive.ae2.MekanismCreativeFluidTankCellHandler;
 import com.mojang.logging.LogUtils;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 @Mod(CreativityDrive.MOD_ID)
@@ -16,8 +19,8 @@ public class CreativityDrive {
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public CreativityDrive(FMLJavaModLoadingContext context) {
-        context.getModEventBus().addListener(this::commonSetup);
+    public CreativityDrive(IEventBus modEventBus, ModContainer container) {
+        modEventBus.addListener(this::commonSetup);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

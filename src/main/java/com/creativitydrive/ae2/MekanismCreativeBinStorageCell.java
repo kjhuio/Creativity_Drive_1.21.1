@@ -10,7 +10,8 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import mekanism.common.inventory.BinMekanismInventory;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.inventory.slot.BinInventorySlot;
 
 /**
  * A read-through view of the item configured in a creative bin. An empty bin
@@ -78,13 +79,12 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
     }
 
     private static AEItemKey getStoredItemKey(ItemStack stack) {
-        // Bins store their contents in Mekanism's sustained inventory NBT rather
-        // than exposing ForgeCapabilities.ITEM_HANDLER on the item stack.
-        BinMekanismInventory inventory = BinMekanismInventory.create(stack);
+        ComponentBackedBinInventorySlot inventory = BinInventorySlot.getForStack(stack);
         if (inventory == null) {
             return null;
         }
-        ItemStack stored = inventory.getBinSlot().getStack();
+
+        ItemStack stored = inventory.getStack();
         return stored.isEmpty() ? null : AEItemKey.of(stored);
     }
 }

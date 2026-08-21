@@ -1,4 +1,4 @@
-Creativity Drive
+Creativity Drive 1.21.1
 ================
 
 Creativity Drive is a Minecraft Forge 1.20.1 mod that makes Mekanism Creative
@@ -34,3 +34,5 @@ Run:
 The built mod jar is written to:
 
     build/libs/creativity_drive-1.0.0.jar
+
+This project is a forked from https://github.com/exe-teams/Creativity_Drive

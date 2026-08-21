@@ -9,10 +9,8 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import me.ramidzkh.mekae2.ae2.MekanismKey;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -83,75 +81,14 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
     }
 
     private static MekanismKey getStoredChemicalKey(ItemStack stack) {
-        MekanismKey key = getStoredGasKey(stack);
-        if (key != null) {
-            return key;
-        }
-
-        key = getStoredInfusionKey(stack);
-        if (key != null) {
-            return key;
-        }
-
-        key = getStoredPigmentKey(stack);
-        if (key != null) {
-            return key;
-        }
-
-        return getStoredSlurryKey(stack);
-    }
-
-    private static MekanismKey getStoredGasKey(ItemStack stack) {
-        var handler = stack.getCapability(Capabilities.GAS_HANDLER).resolve().orElse(null);
+        IChemicalHandler handler = stack.getCapability(Capabilities.CHEMICAL.item());
         if (handler == null) {
             return null;
         }
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            GasStack gas = handler.getChemicalInTank(tank);
-            if (!gas.isEmpty()) {
-                return MekanismKey.of(gas);
-            }
-        }
-        return null;
-    }
-
-    private static MekanismKey getStoredInfusionKey(ItemStack stack) {
-        var handler = stack.getCapability(Capabilities.INFUSION_HANDLER).resolve().orElse(null);
-        if (handler == null) {
-            return null;
-        }
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            InfusionStack infusion = handler.getChemicalInTank(tank);
-            if (!infusion.isEmpty()) {
-                return MekanismKey.of(infusion);
-            }
-        }
-        return null;
-    }
-
-    private static MekanismKey getStoredPigmentKey(ItemStack stack) {
-        var handler = stack.getCapability(Capabilities.PIGMENT_HANDLER).resolve().orElse(null);
-        if (handler == null) {
-            return null;
-        }
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            PigmentStack pigment = handler.getChemicalInTank(tank);
-            if (!pigment.isEmpty()) {
-                return MekanismKey.of(pigment);
-            }
-        }
-        return null;
-    }
-
-    private static MekanismKey getStoredSlurryKey(ItemStack stack) {
-        var handler = stack.getCapability(Capabilities.SLURRY_HANDLER).resolve().orElse(null);
-        if (handler == null) {
-            return null;
-        }
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            SlurryStack slurry = handler.getChemicalInTank(tank);
-            if (!slurry.isEmpty()) {
-                return MekanismKey.of(slurry);
+        for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+            ChemicalStack chemical = handler.getChemicalInTank(tank);
+            if (!chemical.isEmpty()) {
+                return MekanismKey.of(chemical);
             }
         }
         return null;
