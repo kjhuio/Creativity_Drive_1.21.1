@@ -89,6 +89,26 @@ This mod is a forked from https://github.com/exe-teams/Creativity_Drive
     ordering="NONE"
     side="BOTH"
 
+[[dependencies.${mod_id}]]
+    modId = "mekanism"
+    type = "required"
+    versionRange = "[10.7.14,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "ae2"
+    type = "required"
+    versionRange = "[19.0,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "appmek"
+    type = "required"
+    versionRange = "[1.0,)"
+    ordering = "AFTER"
+    side = "BOTH"
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
 # stop your mod loading on the server for example.
