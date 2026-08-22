@@ -13,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
 
+import static com.creativitydrive.Config.ALLOW_SELF_REPLICATION;
+
 /**
  * A read-through view of the item configured in a creative bin. An empty bin
  * supplies itself so it can be duplicated through the ME network.
@@ -27,8 +29,15 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
         this.description = stack.getHoverName();
         AEItemKey storedItemKey = getStoredItemKey(stack);
         // An empty creative bin is itself the infinitely available item.
-        this.itemKey = storedItemKey != null ? storedItemKey : AEItemKey.of(stack);
+        if (storedItemKey != null) {
+            this.itemKey = storedItemKey;
+        } else if (ALLOW_SELF_REPLICATION.get()) {
+            this.itemKey = AEItemKey.of(stack);
+        } else {
+            this.itemKey = null;
+        }
     }
+
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {

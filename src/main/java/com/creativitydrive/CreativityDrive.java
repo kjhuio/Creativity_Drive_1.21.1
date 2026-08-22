@@ -6,11 +6,10 @@ import com.creativitydrive.ae2.MekanismCreativeBinCellHandler;
 import com.creativitydrive.ae2.MekanismCreativeFluidTankCellHandler;
 import com.mojang.logging.LogUtils;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 @Mod(CreativityDrive.MOD_ID)
@@ -21,6 +20,7 @@ public class CreativityDrive {
 
     public CreativityDrive(IEventBus modEventBus, ModContainer container) {
         modEventBus.addListener(this::commonSetup);
+        container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

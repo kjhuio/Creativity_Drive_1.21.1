@@ -9,6 +9,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
+import com.creativitydrive.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -24,7 +25,13 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
         this.description = stack.getHoverName();
         AEFluidKey fluidKey = getStoredFluidKey(stack);
         // An empty creative tank is itself the infinitely available item.
-        this.storedKey = fluidKey != null ? fluidKey : AEItemKey.of(stack);
+        if (fluidKey != null) {
+            this.storedKey = fluidKey;
+        } else if (Config.ALLOW_SELF_REPLICATION.get()) {
+            this.storedKey = AEItemKey.of(stack);
+        } else {
+            this.storedKey = null;
+        }
     }
 
     @Override

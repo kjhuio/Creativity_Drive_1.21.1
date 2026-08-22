@@ -14,6 +14,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import com.creativitydrive.Config;
 
 public final class MekanismCreativeChemicalTankStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
@@ -25,7 +26,13 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
         this.description = stack.getHoverName();
         MekanismKey chemicalKey = getStoredChemicalKey(stack);
         // An empty creative chemical tank is itself the infinitely available item.
-        this.storedKey = chemicalKey != null ? chemicalKey : AEItemKey.of(stack);
+        if (chemicalKey != null) {
+            this.storedKey = chemicalKey;
+        } else if (Config.ALLOW_SELF_REPLICATION.get()) {
+            this.storedKey = AEItemKey.of(stack);
+        } else {
+            this.storedKey = null;
+        }
     }
 
     @Override
