@@ -27,11 +27,18 @@ public class CreativityDrive {
         event.enqueueWork(() -> {
             StorageCells.addCellHandler(MekanismCreativeFluidTankCellHandler.INSTANCE);
             StorageCells.addCellHandler(MekanismCreativeBinCellHandler.INSTANCE);
-            if (ModList.get().isLoaded("appmek")) {
+            if (ModList.get().isLoaded("appflux") && ModList.get().isLoaded("appmek")) {
+                AppliedFluxCompat.registerCreativeEnergyCubeCellHandler();
+                AppliedFluxCompat.registerCreativeEnergyCubeCellHandler();
+                LOGGER.info("Registered Mekanism creative tanks and bins and energy cubes as AE2 infinite storage cells");
+            } else if (ModList.get().isLoaded("appmek")&& !ModList.get().isLoaded("appflux")) {
                 AppliedMekanisticsCompat.registerChemicalTankCellHandler();
-                LOGGER.info("Registered Mekanism creative tanks and bins as AE2 infinite storage cells");
+                LOGGER.info("Registered Mekanism creative tanks and bins as AE2 infinite storage cells (energy cube support disabled)");
+            } else if (ModList.get().isLoaded("appflux") && !ModList.get().isLoaded("appmek")) {
+                AppliedFluxCompat.registerCreativeEnergyCubeCellHandler();
+                LOGGER.info("Registered Mekanism creative fluid tanks and bins and energy cubes as AE2 infinite storage cells (chemical tank support disabled)");
             } else {
-                LOGGER.warn("Applied Mekanistics not found: registered Mekanism creative fluid tanks and bins as AE2 infinite storage cells (chemical tank support disabled)");
+                LOGGER.info("Registered Mekanism creative fluid tanks and bins as AE2 infinite storage cells (chemical tank and energy cube support disabled)");
             }
         });
     }
