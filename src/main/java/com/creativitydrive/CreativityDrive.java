@@ -34,7 +34,7 @@ public class CreativityDrive {
                 LOGGER.info("Registered Mekanism creative fluid tanks and bins as AE2 infinite storage cells (chemical tank support disabled)");
             }
             if (ModList.get().isLoaded("appflux")) {
-                AppliedMekanisticsCompat.registerChemicalTankCellHandler();
+                AppliedFluxCompat.registerCreativeEnergyCubeCellHandler();
                 LOGGER.info("Applied Flux detected : Add energy cube support");
             }
         });
