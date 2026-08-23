@@ -114,7 +114,7 @@ This mod is a forked from https://github.com/exe-teams/Creativity_Drive
 [[dependencies.${mod_id}]]
     modId = "appflux"
     type = "optional"
-    versionRange = "[1.21-2.1.5-neoforge)"
+    versionRange = "[1.21-2.1.5-neoforge,)"
     ordering = "AFTER"
     side = "SERVER"
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
