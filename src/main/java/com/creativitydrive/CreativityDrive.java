@@ -1,7 +1,6 @@
 package com.creativitydrive;
 
 import appeng.api.storage.StorageCells;
-import com.creativitydrive.ae2.MekanismCreativeChemicalTankCellHandler;
 import com.creativitydrive.ae2.MekanismCreativeBinCellHandler;
 import com.creativitydrive.ae2.MekanismCreativeFluidTankCellHandler;
 import com.mojang.logging.LogUtils;
