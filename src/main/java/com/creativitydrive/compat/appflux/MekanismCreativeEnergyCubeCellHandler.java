@@ -3,7 +3,6 @@ package com.creativitydrive.compat.appflux;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.cells.StorageCell;
-import com.creativitydrive.ae2.MekanismCreativeFluidTankStorageCell;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import net.minecraft.world.item.ItemStack;
