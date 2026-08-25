@@ -8,10 +8,14 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
+import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
+
+import org.slf4j.Logger;
 
 import static com.creativitydrive.Config.ALLOW_SELF_REPLICATION;
 
@@ -21,6 +25,7 @@ import static com.creativitydrive.Config.ALLOW_SELF_REPLICATION;
  */
 public final class MekanismCreativeBinStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private final Component description;
     private final AEItemKey itemKey;
@@ -33,6 +38,7 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
             this.itemKey = storedItemKey;
         } else if (ALLOW_SELF_REPLICATION.get()) {
             this.itemKey = AEItemKey.of(stack);
+            LOGGER.warn("{} Self-replication started",stack.getHoverName().getString());
         } else {
             this.itemKey = null;
         }
@@ -41,8 +47,20 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        LOGGER.debug("insert called");
+
         MEStorage.checkPreconditions(what, amount, mode, source);
-        return itemKey != null && itemKey.equals(what) ? amount : 0;
+        boolean accepted = itemKey != null && itemKey.equals(what);
+
+        if (accepted) {
+            if (source.player().isPresent()) {
+                Player player = source.player().get();
+                String playerName = player.getName().getString();
+                LOGGER.info("Insert creative bin item:{} x{} by{} ",what,amount,playerName);
+            }
+        }
+
+        return accepted ? amount : 0;
     }
 
     @Override

@@ -10,13 +10,17 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import com.creativitydrive.Config;
+import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.slf4j.Logger;
 
 public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private final Component description;
     private final AEKey storedKey;
@@ -29,6 +33,7 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
             this.storedKey = fluidKey;
         } else if (Config.ALLOW_SELF_REPLICATION.get()) {
             this.storedKey = AEItemKey.of(stack);
+            LOGGER.warn("{} Self-replication started",stack.getHoverName().getString());
         } else {
             this.storedKey = null;
         }
@@ -36,6 +41,7 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        LOGGER.debug("insert() called");
         MEStorage.checkPreconditions(what, amount, mode, source);
         if (!storedKey.equals(what)) {
             return 0;
@@ -46,10 +52,17 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (!storedKey.equals(what)) {
-            return 0;
+        boolean accepted = storedKey != null && storedKey.equals(what);
+
+        if (accepted) {
+            if (source.player().isPresent()) {
+                Player player = source.player().get();
+                String playerName = player.getName().getString();
+                LOGGER.info("Insert creative fluid tank item:{} x{} by{} ",what,amount,playerName);
+            }
         }
-        return amount;
+
+        return accepted ? amount : 0;
     }
 
     @Override

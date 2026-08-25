@@ -8,16 +8,20 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
+import com.mojang.logging.LogUtils;
 import me.ramidzkh.mekae2.ae2.MekanismKey;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import com.creativitydrive.Config;
+import org.slf4j.Logger;
 
 public final class MekanismCreativeChemicalTankStorageCell implements StorageCell {
     private static final long DISPLAYED_AMOUNT = Long.MAX_VALUE / 4;
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private final Component description;
     private final AEKey storedKey;
@@ -30,6 +34,7 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
             this.storedKey = chemicalKey;
         } else if (Config.ALLOW_SELF_REPLICATION.get()) {
             this.storedKey = AEItemKey.of(stack);
+            LOGGER.warn("{} Self-replication started",stack.getHoverName().getString());
         } else {
             this.storedKey = null;
         }
@@ -37,11 +42,19 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        LOGGER.debug("insert() called");
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (!storedKey.equals(what)) {
-            return 0;
+        boolean accepted = storedKey != null && storedKey.equals(what);
+
+        if (accepted) {
+            if (source.player().isPresent()) {
+                Player player = source.player().get();
+                String playerName = player.getName().getString();
+                LOGGER.info("Insert creative chemical tank item:{} x{} by{} ",what,amount,playerName);
+            }
         }
-        return amount;
+
+        return accepted ? amount : 0;
     }
 
     @Override
