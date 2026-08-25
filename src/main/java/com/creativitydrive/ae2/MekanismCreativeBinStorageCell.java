@@ -56,7 +56,7 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
             if (source.player().isPresent()) {
                 Player player = source.player().get();
                 String playerName = player.getName().getString();
-                LOGGER.info("Insert creative bin item:{} x{} by{} ",what,amount,playerName);
+                LOGGER.debug("Insert creative bin item:{} x{} by{} ",what,amount,playerName);
             }
         }
 
@@ -66,7 +66,17 @@ public final class MekanismCreativeBinStorageCell implements StorageCell {
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        return itemKey != null && itemKey.equals(what) ? amount : 0;
+        boolean accepted = itemKey != null && itemKey.equals(what);
+
+        if (accepted) {
+            if (source.player().isPresent()) {
+                Player player = source.player().get();
+                String playerName = player.getName().getString();
+                LOGGER.debug("Extract creative bin item:{} x{} by{} ",what,amount,playerName);
+            }
+        }
+
+        return accepted ? amount : 0;
     }
 
     @Override

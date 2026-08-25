@@ -50,7 +50,7 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
             if (source.player().isPresent()) {
                 Player player = source.player().get();
                 String playerName = player.getName().getString();
-                LOGGER.info("Insert creative chemical tank item:{} x{} by{} ",what,amount,playerName);
+                LOGGER.debug("Insert creative chemical tank chemical:{} x{} by{} ",what,amount,playerName);
             }
         }
 
@@ -60,10 +60,17 @@ public final class MekanismCreativeChemicalTankStorageCell implements StorageCel
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (!storedKey.equals(what)) {
-            return 0;
+        boolean accepted = storedKey != null && storedKey.equals(what);
+
+        if (accepted) {
+            if (source.player().isPresent()) {
+                Player player = source.player().get();
+                String playerName = player.getName().getString();
+                LOGGER.debug("Extract creative chemical tank chemical:{} x{} by{} ",what,amount,playerName);
+            }
         }
-        return amount;
+
+        return accepted ? amount : 0;
     }
 
     @Override

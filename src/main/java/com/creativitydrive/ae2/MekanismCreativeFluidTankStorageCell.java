@@ -43,10 +43,17 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         LOGGER.debug("insert() called");
         MEStorage.checkPreconditions(what, amount, mode, source);
-        if (!storedKey.equals(what)) {
-            return 0;
+        boolean accepted = storedKey != null && storedKey.equals(what);
+
+        if (accepted) {
+            if (source.player().isPresent()) {
+                Player player = source.player().get();
+                String playerName = player.getName().getString();
+                LOGGER.debug("Insert creative fluid tank fluid:{} x{} by{} ",what,amount,playerName);
+            }
         }
-        return amount;
+
+        return accepted ? amount : 0;
     }
 
     @Override
@@ -58,7 +65,7 @@ public final class MekanismCreativeFluidTankStorageCell implements StorageCell {
             if (source.player().isPresent()) {
                 Player player = source.player().get();
                 String playerName = player.getName().getString();
-                LOGGER.info("Insert creative fluid tank item:{} x{} by{} ",what,amount,playerName);
+                LOGGER.debug("Extract creative fluid tank fluid:{} x{} by{} ",what,amount,playerName);
             }
         }
 
